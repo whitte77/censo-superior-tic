@@ -1,11 +1,14 @@
 """Gráficos Plotly (interativos, para o artigo) e Matplotlib (estáticos). Entradas: saídas de analysis.rq1/rq2/rq3."""
+from math import ceil
 from pathlib import Path
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MultipleLocator, PercentFormatter
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 AVISO = "DADOS SINTÉTICOS — APENAS TESTE"
 COR = {"principal": "#0f5c6e", "segunda": "#b8590f", "neutra": "#6b7785"}
+ROTULO_MOD = {"presencial": "Presencial", "ead": "EaD", "total": "Total"}
 COR_MOD = {"presencial": COR["principal"], "ead": COR["segunda"], "total": COR["neutra"]}
 
 
@@ -42,12 +45,35 @@ def plotly_rq2(r2, sintetico=False):
     return _marca_plotly(f, sintetico)
 
 
+def _limite_rq3(r3):
+    maior = r3.pct_fem.max()
+    return min(100, 5 * ceil((max(20, maior) + 3) / 5))
+
+
+def _rotulo_pct(valor):
+    return f"{valor:.2f}%".replace(".", ",")
+
+
 def plotly_rq3(r3, sintetico=False):
     f = go.Figure()
     for mod, d in r3.groupby("modalidade"):
-        f.add_scatter(x=d.ano, y=d.pct_fem, mode="lines+markers", name=mod, line_color=COR_MOD[mod])
-    f.update_layout(template="simple_white", title="Participação feminina nas matrículas (%)", yaxis=dict(range=[0, 100], title="% feminino"),
-                    xaxis=dict(dtick=1, title="Ano"), legend_title_text="")
+        d = d.sort_values("ano")
+        ultimo = d.iloc[-1]
+        cor = COR_MOD[mod]
+        f.add_scatter(x=d.ano, y=d.pct_fem, mode="lines+markers+text",
+                      name=ROTULO_MOD[mod], line_color=cor,
+                      text=[""] * (len(d) - 1) + [_rotulo_pct(ultimo.pct_fem)],
+                      textposition="middle right", textfont=dict(color=cor),
+                      hovertext=[_rotulo_pct(valor) for valor in d.pct_fem],
+                      hovertemplate="%{x}: %{hovertext}")
+    primeiro_ano, ultimo_ano = r3.ano.min(), r3.ano.max()
+    f.update_layout(template="simple_white", title="Participação feminina nas matrículas (%)",
+                    separators=",.", margin=dict(l=48, r=12, t=94, b=50),
+                    yaxis=dict(range=[0, _limite_rq3(r3)], title="Participação",
+                               dtick=5, ticksuffix="%"),
+                    xaxis=dict(tickvals=sorted(r3.ano.unique()), title="Ano",
+                               range=[primeiro_ano - .25, ultimo_ano + 1.5]),
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02))
     return _marca_plotly(f, sintetico)
 
 
@@ -72,8 +98,19 @@ def mpl_rq2(r2, sintetico=False):
 def mpl_rq3(r3, sintetico=False):
     fig, ax = plt.subplots(figsize=(6, 4))
     for mod, d in r3.groupby("modalidade"):
-        ax.plot(d.ano, d.pct_fem, marker="o", color=COR_MOD[mod], label=mod)
-    ax.set(title="Participação feminina nas matrículas (%)", xlabel="Ano", ylabel="% feminino", ylim=(0, 100)); ax.set_xticks(sorted(r3.ano.unique())); ax.legend()
+        d = d.sort_values("ano")
+        ultimo = d.iloc[-1]
+        cor = COR_MOD[mod]
+        ax.plot(d.ano, d.pct_fem, marker="o", color=cor, label=ROTULO_MOD[mod])
+        ax.annotate(_rotulo_pct(ultimo.pct_fem), (ultimo.ano, ultimo.pct_fem),
+                    xytext=(7, 0), textcoords="offset points", va="center", color=cor)
+    ax.set(title="Participação feminina nas matrículas (%)", xlabel="Ano",
+           ylabel="Participação", ylim=(0, _limite_rq3(r3)))
+    ax.set_xticks(sorted(r3.ano.unique()))
+    ax.set_xlim(r3.ano.min() - .25, r3.ano.max() + 1)
+    ax.yaxis.set_major_locator(MultipleLocator(5))
+    ax.yaxis.set_major_formatter(PercentFormatter(xmax=100, decimals=0))
+    ax.legend(loc="upper left", ncol=3)
     fig.tight_layout()
     return _marca_mpl(fig, sintetico)
 
