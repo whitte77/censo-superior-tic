@@ -1,0 +1,20 @@
+[
+  {
+    "arquivo": "rq1.csv",
+    "linhas": 6,
+    "resultado": "IGUAL",
+    "tolerancia": 1e-12
+  },
+  {
+    "arquivo": "rq2.csv",
+    "linhas": 12,
+    "resultado": "IGUAL",
+    "tolerancia": 1e-12
+  },
+  {
+    "arquivo": "rq3.csv",
+    "linhas": 18,
+    "resultado": "IGUAL",
+    "tolerancia": 1e-12
+  }
+]

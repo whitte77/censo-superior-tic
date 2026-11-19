@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Formação superior em Computação e TIC no Brasil: microdados do INEP (2019–2024)</title>
+<meta content="Análise exploratória dos microdados do Censo da Educação Superior (INEP) sobre Computação e TIC, 2019–2024." name="description"/>
+<link href="assets/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>A evolução da formação superior em Computação e Tecnologias da Informação e Comunicação no Brasil: uma análise dos microdados do INEP (2019–2024)</h1>
+<div class="meta">
+<p>Hiago Arruda; Alessandro Davi</p>
+<p>Bacharelado em Sistemas de Informação, UNILASALLE-RJ · Disciplina: Linguagem de Programação (Análise e Visualização de Dados com Python) · 2026.2</p>
+<p>Professor orientador: Alexandre Neves Louzada</p>
+</div>
+<ul class="badges"><li>Python · execução verificada em 3.14.7</li><li>Dados: INEP, Censo da Educação Superior</li><li>Código: MIT</li><li>Licença dos dados: termos do INEP; licença específica não confirmada</li><li>Resultados: dados reais; validação externa parcial</li></ul>
+<a class="btn" href="https://github.com/H-Arruda/censo-superior-tic">Repositório no GitHub</a>
+</header>
+<p class="aviso">Dados reais do ETL; contrato e indicadores conferidos sobre o Parquet. Reconciliação externa integral pendente.</p>
+<nav aria-label="Seções" class="toc"><ol>
+<li><a href="#resumo">Resumo</a></li><li><a href="#introducao">1 Introdução</a></li><li><a href="#metodologia">2 Metodologia</a></li><li><a href="#resultados">3 Resultados</a></li><li><a href="#conclusao">4 Conclusão</a></li><li><a href="#fair">5 Dados e FAIR</a></li><li><a href="#referencias">6 Referências</a></li></ol></nav>
+<main>
+<section class="abstract" id="resumo">
+<h2>Resumo</h2>
+<p>O Censo da Educação Superior, realizado anualmente pelo INEP, é uma das principais fontes abertas sobre a graduação brasileira. Este estudo examina, nos microdados de 2019 a 2024, a área de Computação e TIC (área geral 06 da classificação Cine Brasil), quanto à evolução das matrículas, à participação do ensino a distância e à participação feminina, em comparação com o conjunto da graduação. O pipeline usa transformações determinísticas em Python, com dados em formato aberto e práticas orientadas pelos princípios FAIR. Entre 2019 e 2024, as matrículas em TIC passaram de 353.909 para 799.800 (+126,0%), e sua participação na graduação aumentou de 4,11% para 7,82%. O EaD passou de 28,92% para 60,49% das matrículas e de 42,94% para 71,66% dos ingressantes. A participação feminina subiu de 13,53% para 19,23%, permanecendo minoritária. A análise restringiu-se à graduação ofertada no Brasil, com agregação anual por modalidade, validação de integridade e estatística descritiva. Os resultados apontam a expansão relativa da área e a centralidade do EaD, além da persistência da desigualdade na composição por sexo. O estudo não identifica efeitos causais nem trajetórias individuais; os indicadores podem subsidiar investigações sobre acesso, permanência e oferta de formação tecnológica.</p>
+<p><strong>Palavras-chave:</strong> Censo da Educação Superior; Computação e TIC; ensino a distância; participação feminina; microdados; FAIR.</p>
+<h3>Abstract</h3>
+<p>This study examines Brazilian higher education in computing and information and communication technologies (ICT), using INEP census microdata from 2019 to 2024. A reproducible Python pipeline aggregates domestic undergraduate enrollments and entrants by year and mode of instruction. Enrollment rose from 353,909 to 799,800 (126.0%), while its share of all undergraduate enrollments increased from 4.11% to 7.82%. Distance education accounted for 60.49% of ICT enrollments and 71.66% of entrants in 2024, up from 28.92% and 42.94% in 2019. Female representation increased from 13.53% to 19.23%, remaining a minority in both modes. The results describe changes in the composition of higher education without establishing causal effects or individual trajectories. Integrity checks, documented filters and open-format outputs support transparency and reproducibility.</p>
+<p>Keywords: higher education census; computing and ICT; distance education; female participation; microdata; FAIR.</p></section>
+<section id="introducao">
+<h2>1 Introdução</h2>
+<p>O Censo da Educação Superior é realizado anualmente pelo Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira (INEP) e fornece informações para a formulação, o monitoramento e a avaliação de políticas públicas (SARAIVA et al., 2023). Os microdados são divulgados em formato aberto, e a página oficial do INEP oferece as edições de 2019 a 2024 (INEP, [s.d.]).</p>
+<p>A área de Computação e TIC já foi examinada com esses dados. Saraiva et al. (2023) apresentam um panorama dos cursos de TIC entre 2015 e 2021, que inclui evasão e distribuição regional. Cursino e Martinez (2021) analisam a inserção de mulheres em cursos de TI entre 2009 e 2018, partindo da constatação de que a área é ocupada majoritariamente por homens. Entre os trabalhos citados aqui, as séries terminam em 2018 e 2021. Este artigo cobre 2019–2024 e acompanha dois eixos, modalidade de ensino e sexo, com comparação ao conjunto da graduação na evolução das matrículas.</p>
+<h3>1.1 Delimitação do objeto</h3>
+<p>Computação e TIC corresponde à área geral 06 da classificação Cine Brasil, em qualquer grau acadêmico, respeitando a classificação original dos cursos, sem reagrupamento por nome. O código 06 e seu rótulo foram observados nos seis arquivos.</p>
+<h3>1.2 Perguntas de pesquisa</h3>
+<ul>
+<li><strong>RQ1.</strong> Como evoluíram as matrículas em Computação e TIC, em números absolutos e proporcionalmente ao total de matrículas da graduação brasileira?</li>
+<li><strong>RQ2.</strong> Como evoluiu a participação do EaD nas matrículas e nos ingressos de Computação e TIC?</li>
+<li><strong>RQ3.</strong> Como evoluiu a participação feminina nas matrículas de Computação e TIC, considerando as modalidades presencial e a distância?</li>
+</ul>
+</section>
+<section id="metodologia">
+<h2>2 Metodologia e pipeline de dados</h2>
+<h3>2.1 Fonte e granularidade</h3>
+<p>Fonte primária: microdados do Censo da Educação Superior (INEP), edições 2019 a 2024. Os CSVs de cadastro de cursos são registros agregados por curso e dimensão geográfica, não registros individuais. O inventário registrou 3.007.594 linhas brutas; a saída contém 24 linhas, uma por ano, escopo e modalidade.</p>
+<h3>2.2 Tratamento dos dados</h3>
+<p>Princípios adotados: códigos categóricos preservados como texto; registro de URL, data de registro no manifesto e SHA-256 de cada arquivo; contagem de registros antes e depois de qualquer filtro; nenhuma regra de agregação ou deduplicação sem fundamento na documentação oficial. CSV separado por ponto e vírgula, lido em Latin-1. Foram retidos nível acadêmico 1 e dimensões 1 e 2; a dimensão 3 não contém valores positivos nas métricas analisadas e a 4 representa oferta no exterior. Não houve imputação nas linhas retidas nem deduplicação por código de curso. Os quatro campos quantitativos são inteiros não negativos; a soma feminina e masculina coincide com o total. O relatório de integridade versionado registra correspondência nos 12 MD5 distribuídos nos ZIPs; a aquisição manual não registrou instante exato de download nem cabeçalhos HTTP. A validação externa integral permanece pendente.</p>
+<h3>2.3 Indicadores</h3>
+<p>Sejam M o número de matrículas, I o de ingressantes, F e H as matrículas dos sexos feminino e masculino, e t o ano.</p>
+<p class="formula">RQ1: participação_t = 100 × M(Computação e TIC, t) / M(graduação, t)<br/>
+RQ1: CAGR = (M_final / M_inicial)^(1/n) − 1, com n = número de anos entre os extremos<br/>
+RQ2: %EaD_t = 100 × EaD_t / (presencial_t + EaD_t), calculado para M e para I<br/>
+RQ3: %feminino_t = 100 × F_t / (F_t + H_t), por modalidade e no total</p>
+<p>Variações de percentuais são reportadas em pontos percentuais (p.p.). Os valores absolutos e as proporções são calculados sobre a tabela agregada definida no contrato de dados do repositório.</p>
+<h3>2.4 Código</h3>
+<p>A análise usa NumPy (HARRIS et al., 2020) e pandas (MCKINNEY, 2010); os gráficos usam Matplotlib (HUNTER, 2007) e Plotly (PLOTLY TECHNOLOGIES INC., [s.d.]). As versões e instruções de execução constam no repositório.</p>
+<p>Exemplo da lógica de indicadores (função <code>rq2</code>, <code>src/analysis.py</code>):</p>
+<pre><code>def rq2(df: pd.DataFrame, escopo: str = "computacao_tic") -&gt; pd.DataFrame:
+    """Participação do EaD (%) em matrículas e ingressantes, por ano."""
+    partes = []
+    for indicador, col in (("matriculas", "qt_mat"), ("ingressantes", "qt_ing")):
+        p = df[df.escopo == escopo].pivot_table(index="ano", columns="modalidade", values=col, aggfunc="sum")
+        partes.append(pd.DataFrame({
+            "ano": p.index, "escopo": escopo, "indicador": indicador,
+            "qt_ead": p["ead"].to_numpy(), "qt_total": p.sum(axis=1).to_numpy(),
+            "pct_ead": 100 * p["ead"].to_numpy() / p.sum(axis=1).to_numpy(),
+        }))
+    out = pd.concat(partes, ignore_index=True)
+    out["delta_pp"] = out.groupby("indicador").pct_ead.diff()
+    return out</code></pre>
+<p>O ETL usa o filtro de graduação e dimensões 1 e 2, seguido de soma por ano e modalidade (src/etl.py).</p>
+<h3>2.5 Testes com dados sintéticos</h3>
+<p>As funções de análise e de visualização foram testadas com dados sintéticos aleatórios (<code>src/synthetic.py</code>), rotulados, com marca d’água nas figuras e separados dos resultados. Nenhum resultado deste artigo deriva desses dados.</p>
+</section>
+<section id="resultados">
+<h2>3 Resultados e discussão</h2>
+<h3>3.1 RQ1: matrículas em Computação e TIC</h3>
+<figure><iframe loading="lazy" src="assets/fig_rq1.html" title="Gráfico RQ1"></iframe><a href="assets/fig_rq1.png">Versão estática (PNG)</a><details><summary>Visualizar versão estática</summary><img alt="Versão estática do gráfico RQ1" loading="lazy" src="assets/fig_rq1.png"/></details><figcaption>Figura 1. Matrículas e participação no total da graduação. Fonte: INEP; elaboração dos autores.</figcaption></figure>
+
+<p>As matrículas cresceram 126,0%, contra 18,86% no total da graduação, e a participação da área aumentou 3,71 p.p. O crescimento anual mais forte foi em 2022 (28,09%); a taxa composta anual foi de aproximadamente 17,7%. Isso indica expansão relativa da área, sem demonstrar suas causas.</p>
+<h3>3.2 RQ2: participação do EaD</h3>
+<figure><iframe loading="lazy" src="assets/fig_rq2.html" title="Gráfico RQ2"></iframe><a href="assets/fig_rq2.png">Versão estática (PNG)</a><details><summary>Visualizar versão estática</summary><img alt="Versão estática do gráfico RQ2" loading="lazy" src="assets/fig_rq2.png"/></details><figcaption>Figura 2. Participação do EaD nas matrículas e ingressantes em TIC. Fonte: INEP; elaboração dos autores.</figcaption></figure>
+<p>O EaD passou de 28,92% a 60,49% das matrículas (+31,58 p.p.) e de 42,94% a 71,66% dos ingressantes (+28,72 p.p.). A modalidade tornou-se majoritária entre ingressantes em 2020 e entre matrículas em 2022. A ampliação da oferta remota é compatível com a expansão observada, mas não permite atribuí-la à pandemia ou a políticas específicas.</p>
+<h3>3.3 RQ3: participação feminina</h3>
+<figure><iframe loading="lazy" src="assets/fig_rq3.html" title="Gráfico RQ3"></iframe><a href="assets/fig_rq3.png">Versão estática (PNG)</a><details><summary>Visualizar versão estática</summary><img alt="Versão estática do gráfico RQ3" loading="lazy" src="assets/fig_rq3.png"/></details><figcaption>Figura 3. Participação feminina por modalidade. Fonte: INEP; elaboração dos autores.</figcaption></figure>
+<p>A participação feminina total avançou de 13,53% a 19,23% (+5,70 p.p.). Em 2024, alcançou 17,09% no presencial e 20,62% no EaD. A diferença entre modalidades não demonstra que o EaD cause maior inclusão: composição dos cursos, perfis e condições de acesso podem contribuir. A maioria das matrículas ainda é masculina.</p>
+</section>
+<section id="conclusao">
+<h2>4 Conclusão</h2>
+<p>A área de Computação e TIC cresceu em termos absolutos e relativos, com predominância crescente do EaD e aumento da participação feminina, embora esta permaneça minoritária. Os resultados sugerem a importância de investigar mecanismos de acesso e permanência na formação tecnológica.</p>
+<h3>Limitações e trabalhos futuros</h3>
+<p>Matrículas não equivalem a pessoas únicas; os dados agregados não permitem acompanhar evasão individual, rendimento ou inserção profissional. A variável sexo tem as duas categorias usadas pelo INEP. O recorte exclui oferta no exterior e a reconciliação externa integral está pendente. Mudanças de classificação e coleta não foram auditadas em nível de curso. Estudos futuros podem examinar região, grau acadêmico, conclusão e permanência, com dados adequados.</p>
+</section>
+<section id="fair">
+<h2>5 Disponibilidade dos dados e declaração FAIR</h2>
+<p>A organização do repositório é orientada pelos princípios FAIR (WILKINSON et al., 2016). Localizável: título, palavras-chave, autoria e fonte oficial. Acessível: código, instruções e artigo em repositório público após publicação. Interoperável: Parquet, CSV, JSON e dicionário de dados. Reutilizável: dependências congeladas, código MIT e filtros documentados; os dados de terceiros permanecem sujeitos aos termos da fonte, sem atribuição de licença própria. A <a href="https://download.inep.gov.br/publicacoes/institucionais/gestao_e_governanca/politica_e_plano_de_dados_abertos.pdf">política de dados abertos do INEP</a> descreve o reuso com crédito da autoria ou fonte; uma licença específica dos pacotes utilizados não foi confirmada. Não foi realizada avaliação formal de conformidade FAIR.</p>
+<pre><code>git clone https://github.com/H-Arruda/censo-superior-tic.git
+cd censo-superior-tic
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m src.download
+# Se TLS falhar, obtenha os ZIPs manualmente (README).
+mkdir -p data/processed/audit
+python -m src.integrity
+python -m src.inventory
+python -m src.schema
+python -m src.profile
+python -m src.etl
+python -m nbconvert --to notebook --execute --inplace notebooks/analise_exploratoria.ipynb</code></pre>
+</section>
+<section id="referencias">
+<h2>6 Referências</h2>
+<ol class="refs">
+<li>CURSINO, Ariana R.; MARTINEZ, Juliana F. P. Análise estatística descritiva e regressão da inserção das mulheres nos cursos de TI nos anos de 2009 a 2018. In: WOMEN IN INFORMATION TECHNOLOGY (WIT), 15., 2021, Evento online. <em>Anais [...]</em>. Porto Alegre: SBC, 2021. p. 21–30. DOI: <a href="https://doi.org/10.5753/wit.2021.15838">10.5753/wit.2021.15838</a>. Disponível em: <a href="https://sol.sbc.org.br/index.php/wit/article/view/15838">https://sol.sbc.org.br/index.php/wit/article/view/15838</a>.</li>
+<li>HARRIS, Charles R. et al. Array programming with NumPy. <em>Nature</em>, v. 585, p. 357–362, 2020. DOI: <a href="https://doi.org/10.1038/s41586-020-2649-2">10.1038/s41586-020-2649-2</a>.</li>
+<li>HUNTER, John D. Matplotlib: a 2D graphics environment. <em>Computing in Science &amp; Engineering</em>, v. 9, n. 3, p. 90–95, 2007. DOI: <a href="https://doi.org/10.1109/MCSE.2007.55">10.1109/MCSE.2007.55</a>.</li>
+<li>INSTITUTO NACIONAL DE ESTUDOS E PESQUISAS EDUCACIONAIS ANÍSIO TEIXEIRA (INEP). <em>Microdados do Censo da Educação Superior</em>. Brasília: INEP, [s.d.]. Disponível em: <a href="https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-da-educacao-superior">https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/microdados/censo-da-educacao-superior</a>. Acesso em: 19 nov. 2026.</li>
+<li>MCKINNEY, Wes. Data structures for statistical computing in Python. In: PYTHON IN SCIENCE CONFERENCE, 9., 2010. <em>Proceedings [...]</em>, 2010. p. 56–61. DOI: <a href="https://doi.org/10.25080/Majora-92bf1922-00a">10.25080/Majora-92bf1922-00a</a>.</li>
+<li>PLOTLY TECHNOLOGIES INC. <em>Open Source Python Graphing and Data Visualization Library</em>. [s.d.]. Disponível em: <a href="https://plotly.com/python/">https://plotly.com/python/</a>. Acesso em: 19 nov. 2026.</li>
+<li>SARAIVA, Raphael; SOARES, Pamella; ARAÚJO, Allysson Allex; SOUZA, Jerffeson. Análise descritiva dos microdados do Censo da Educação Superior do INEP para cursos de Tecnologia da Informação e Comunicação no Brasil — Um panorama 2015-2021. In: WORKSHOP SOBRE EDUCAÇÃO EM COMPUTAÇÃO (WEI), 31., 2023, João Pessoa. <em>Anais [...]</em>. Porto Alegre: SBC, 2023. p. 443–453. DOI: <a href="https://doi.org/10.5753/wei.2023.229974">10.5753/wei.2023.229974</a>. Disponível em: <a href="https://sol.sbc.org.br/index.php/wei/article/view/24924">https://sol.sbc.org.br/index.php/wei/article/view/24924</a>.</li>
+<li>WILKINSON, Mark D. et al. The FAIR Guiding Principles for scientific data management and stewardship. <em>Scientific Data</em>, v. 3, art. 160018, 2016. DOI: <a href="https://doi.org/10.1038/sdata.2016.18">10.1038/sdata.2016.18</a>.</li>
+</ol>
+</section>
+</main>
+</div>
+</body>
+</html>

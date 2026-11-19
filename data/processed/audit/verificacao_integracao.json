@@ -1,0 +1,19 @@
+{
+  "chave_duplicada": "REJEITADO_CORRETAMENTE",
+  "grade_incompleta": "REJEITADO_CORRETAMENTE",
+  "negativo": "REJEITADO_CORRETAMENTE",
+  "escopo_invalido": "REJEITADO_CORRETAMENTE",
+  "sintetico_leitura_padrao": "REJEITADO_CORRETAMENTE",
+  "sintetico_docs": "REJEITADO_CORRETAMENTE",
+  "marcas_sintetico": "PRESENTES",
+  "python": "3.14.7",
+  "pacotes": {
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "pyarrow": "26.0.1",
+    "matplotlib": "3.11.2",
+    "plotly": "7.1.0",
+    "nbconvert": "7.17.2",
+    "nbclient": "0.11.0"
+  }
+}

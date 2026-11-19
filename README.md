@@ -2,10 +2,14 @@
 
 Análise exploratória da evolução da formação superior em Computação e Tecnologias da Informação e Comunicação no Brasil com microdados do INEP.
 
-**Autores:** [preencher os dois nomes]  
-**Instituição:** [preencher]  
-**Disciplina:** Linguagem de Programação — Análise e Visualização de Dados com Python  
-**Professor:** [preencher]  
+**Autores:** Hiago Arruda; Alessandro Davi
+
+**Instituição:** UNILASALLE-RJ — Bacharelado em Sistemas de Informação
+
+**Disciplina:** Linguagem de Programação — Análise e Visualização de Dados com Python
+
+**Professor:** Alexandre Neves Louzada
+
 **Semestre:** 2026.2
 
 **Palavras-chave:** ensino superior; Computação e TIC; educação a distância; participação feminina; engenharia de dados; INEP.
@@ -22,7 +26,7 @@ Análise exploratória da evolução da formação superior em Computação e Te
 
 ## Reprodução
 
-Python 3.12.3 de referência. Execute na raiz do repositório, em Bash:
+Python 3.12.3 de referência do ETL; integração executada e verificada em Python 3.14.7, com as versões de `requirements.txt`. Execute na raiz do repositório, em Bash:
 
 ```bash
 python3.12 -m venv .venv
@@ -44,7 +48,28 @@ python -m src.profile | tee data/processed/audit/profile.log
 python -m src.etl | tee data/processed/audit/etl.log
 ```
 
-Execute `notebooks/analise_exploratoria.ipynb` após gerar `data/processed/agregado_anual.parquet` e `data/processed/agregado_anual.meta.json`. A publicação será servida a partir de `docs/` no GitHub Pages. [Acrescentar comando final de gráficos e link do artigo após integrar a análise.]
+Após gerar o Parquet, execute a análise na raiz:
+
+```bash
+python -m nbconvert --to notebook --execute --inplace notebooks/analise_exploratoria.ipynb
+```
+
+A cópia integrada inclui o Parquet real de 24 linhas e os metadados versionados na branch de engenharia de dados. Para refazer apenas a análise, os ZIPs brutos não são necessários: instale as dependências e execute o comando acima. Para refazer o ETL, obtenha os seis ZIPs oficiais primeiro.
+
+O notebook valida o contrato, o SHA-256 do manifesto e o período 2019–2024; produz `docs/assets/rq1.csv`, `rq2.csv`, `rq3.csv` e gráficos HTML/PNG. Os resultados foram comparados aos CSVs recebidos, com tolerância numérica de 1e-12.
+
+[Artigo local](docs/index.html). A pasta `docs/` está preparada para GitHub Pages; esta entrega não foi publicada. Para visualizar por HTTP, execute `python -m http.server 8000 --directory docs` e abra `http://localhost:8000`. Os gráficos interativos usam a CDN do Plotly; versões PNG estão disponíveis no artigo.
+
+No PowerShell, a preparação do ambiente é:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python -m nbconvert --to notebook --execute --inplace notebooks/analise_exploratoria.ipynb
+```
+
+Os arquivos de texto usam LF por `.gitattributes`, preservando o hash do manifesto também em clones no Windows.
 
 ## Estrutura
 
@@ -64,4 +89,10 @@ Execute `notebooks/analise_exploratoria.ipynb` após gerar `data/processed/agreg
 
 ## Validação e limitações
 
-A execução dos seis anos gerou 24 linhas. O manifesto registra SHA-256 e a verificação CRC dos ZIPs; a aquisição manual não registrou cabeçalhos HTTP nem instante exato de download. A auditoria verificou os domínios e a identidade entre as contagens por sexo nos registros retidos. A reconciliação externa integral, a conferência de MD5 oficiais e a auditoria de chaves/reclassificações permanecem pendentes. Matrículas não equivalem a pessoas únicas; o estudo é descritivo e não identifica efeitos causais.
+A execução dos seis anos gerou 24 linhas. O manifesto registra SHA-256 e a verificação CRC dos ZIPs; a aquisição manual não registrou cabeçalhos HTTP nem instante exato de download. A auditoria verificou os domínios e a identidade entre as contagens por sexo nos registros retidos. O relatório de integridade recebido e versionado registra **12/12 MD5 correspondentes** aos manifestos distribuídos dentro dos ZIPs; essa verificação não foi repetida nesta integração, pois os arquivos brutos não acompanham o repositório. A validação externa é **parcial**: a reconciliação externa integral e a auditoria de chaves/reclassificações permanecem pendentes. MD5 e CRC verificam integridade e não equivalem a reconciliação com estatísticas externas. Matrículas não equivalem a pessoas únicas; o estudo é descritivo e não identifica efeitos causais.
+
+## Revisão bibliográfica e reutilização
+
+As referências foram conferidas nas páginas editoriais da SBC, nos metadados DOI/Crossref, nos anais SciPy e na documentação oficial do Plotly; DOIs e páginas dos artigos SBC foram incluídos. A referência genérica do Plotly foi substituída pela documentação da biblioteca Python.
+
+A fonte oficial disponibiliza as seis edições utilizadas. A política de dados abertos do INEP descreve a reutilização com crédito da autoria ou fonte ([política oficial](https://download.inep.gov.br/publicacoes/institucionais/gestao_e_governanca/politica_e_plano_de_dados_abertos.pdf)). Uma licença específica dos seis pacotes não foi confirmada; por isso não se atribui MIT aos dados. Consulte [o registro da integração](RELATORIO_INTEGRACAO.md).

@@ -42,4 +42,4 @@ Granularidade: ano × escopo × modalidade. Chave composta: `ano`, `escopo`, `mo
 - Matrículas representam vínculos, não pessoas únicas. Não se deduplicam registros por código de curso; a auditoria de chaves e reclassificações individuais ainda não foi concluída.
 - Sexo segundo as categorias do INEP, não uma medida abrangente de identidade de gênero.
 - Indicadores de participação usam razões entre somas; denominador zero implica indicador indefinido.
-- Reconciliação externa integral e verificação dos MD5 oficiais ainda pendentes; consultar os relatórios de auditoria e metadados.
+- O relatório versionado registra 12/12 MD5 correspondentes aos manifestos internos dos ZIPs. A reconciliação externa integral permanece pendente; consultar os relatórios de auditoria e metadados.
