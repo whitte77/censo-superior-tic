@@ -1,0 +1,57 @@
+{
+  "base_engenharia_contida_na_analise": true,
+  "main_e_analise_mesmo_commit": true,
+  "etl_preservado": {
+    "src/__init__.py": true,
+    "src/download.py": true,
+    "src/etl.py": true,
+    "src/integrity.py": true,
+    "src/inventory.py": true,
+    "src/profile.py": true,
+    "src/schema.py": true
+  },
+  "parquet_igual_ao_etl": true,
+  "arquivos_pedidos_presentes": true,
+  "referencia_zip_sha256": "4ac583a76e0c76d628e67bcf91595b675713430404aab7f3f205266b66e6eec2",
+  "python": "3.12.14",
+  "linhas_parquet": 24,
+  "avisos_contrato": [],
+  "sha256_manifesto_confere": true,
+  "comparacao_csvs": {
+    "rq1.csv": {
+      "linhas": 6,
+      "resultado": "IGUAL",
+      "rtol": 1e-12,
+      "atol": 1e-12
+    },
+    "rq2.csv": {
+      "linhas": 12,
+      "resultado": "IGUAL",
+      "rtol": 1e-12,
+      "atol": 1e-12
+    },
+    "rq3.csv": {
+      "linhas": 18,
+      "resultado": "IGUAL",
+      "rtol": 1e-12,
+      "atol": 1e-12
+    }
+  },
+  "relatorio_md5_recebido": {
+    "coincidentes": 12,
+    "total": 12,
+    "reexecutado_sobre_brutos": false
+  },
+  "notebook": {
+    "celulas_executadas": 9,
+    "erros": 0,
+    "kernel": "3.12.14"
+  },
+  "artigo": {
+    "links_locais": "OK",
+    "campos_a_preencher": 0,
+    "graficos_interativos": 3,
+    "graficos_png": 3
+  },
+  "validacao_externa": "PARCIAL; reconciliação integral pendente"
+}

@@ -6,7 +6,7 @@
   "sintetico_leitura_padrao": "REJEITADO_CORRETAMENTE",
   "sintetico_docs": "REJEITADO_CORRETAMENTE",
   "marcas_sintetico": "PRESENTES",
-  "python": "3.14.7",
+  "python": "3.12.14",
   "pacotes": {
     "numpy": "2.5.5",
     "pandas": "3.1.1",

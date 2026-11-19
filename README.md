@@ -26,50 +26,67 @@ Análise exploratória da evolução da formação superior em Computação e Te
 
 ## Reprodução
 
-Python 3.12.3 de referência do ETL; integração executada e verificada em Python 3.14.7, com as versões de `requirements.txt`. Execute na raiz do repositório, em Bash:
+A base agregada real já acompanha o projeto. Para executar a análise, use **Python 3.12**. A execução desta revisão foi verificada em **3.12.14**, com as versões fixadas em `requirements.txt`; a referência original do ETL era 3.12.3.
+
+### Executar a análise no Windows (PowerShell)
+
+Na raiz do projeto, com Python 3.12 instalado:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m nbconvert --to notebook --execute --inplace notebooks/analise_exploratoria.ipynb
+```
+
+Esses comandos usam o Python do ambiente diretamente, sem depender da ativação do PowerShell. Se você já tem um ambiente Python 3.12 preparado, use o executável desse ambiente nos três últimos comandos.
+
+### Executar a análise em Linux/macOS (Bash)
 
 ```bash
 python3.12 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m pip check
+python -m nbconvert --to notebook --execute --inplace notebooks/analise_exploratoria.ipynb
+```
+
+O notebook lê `data/processed/agregado_anual.parquet`, valida o contrato, o SHA-256 do manifesto e a grade de 24 linhas (2019–2024), calcula as três RQs e regenera os CSVs e gráficos HTML/PNG em `docs/assets/`. As saídas foram comparadas aos CSVs do ZIP recebido, com tolerâncias absoluta e relativa de 1e-12.
+
+### Ver o artigo pronto
+
+[Artigo online](https://whitte77.github.io/censo-superior-tic/) · [arquivo local](docs/index.html).
+
+Para servir a cópia local:
+
+```bash
+python -m http.server 8000 --directory docs
+```
+
+Abra `http://localhost:8000`. Também é possível abrir `docs/index.html` diretamente no navegador. Plotly usa CDN; os PNGs oferecem alternativa estática.
+
+### Refazer o ETL completo (opcional para executar a análise)
+
+Os seis ZIPs brutos do INEP não são versionados. No ambiente Python, obtenha-os com:
+
+```bash
 python -m src.download
 ```
 
-Se a aquisição automática falhar por conectividade ou certificado TLS, baixe os seis ZIPs pela página oficial, em ambiente que valide o HTTPS, sem extrair, e coloque-os em `data/raw/` com nomes `microdados_censo_da_educacao_superior_ANO.zip`. Não desative a validação TLS. O ETL registra aquisições manuais e verifica arquivos contra o manifesto existente; arquivos divergentes não devem ser substituídos sem investigação.
+Se a aquisição automática falhar por conectividade ou certificado TLS, baixe os seis ZIPs pela página oficial, em ambiente que valide o HTTPS, sem extrair, e coloque-os em `data/raw/` com nomes `microdados_censo_da_educacao_superior_ANO.zip`. Não desative a validação TLS. Os arquivos são verificados contra o manifesto existente; divergências exigem investigação.
+
+Execute, na raiz, após obter os dados brutos:
 
 ```bash
-mkdir -p data/processed/audit
-set -o pipefail
-python -m src.integrity | tee data/processed/audit/integrity.log
-python -m src.inventory | tee data/processed/audit/inventory.log
-python -m src.schema | tee data/processed/audit/schema.log
-python -m src.profile | tee data/processed/audit/profile.log
-python -m src.etl | tee data/processed/audit/etl.log
-```
-
-Após gerar o Parquet, execute a análise na raiz:
-
-```bash
+python -m src.integrity
+python -m src.inventory
+python -m src.schema
+python -m src.profile
+python -m src.etl
 python -m nbconvert --to notebook --execute --inplace notebooks/analise_exploratoria.ipynb
 ```
 
-A cópia integrada inclui o Parquet real de 24 linhas e os metadados versionados na branch de engenharia de dados. Para refazer apenas a análise, os ZIPs brutos não são necessários: instale as dependências e execute o comando acima. Para refazer o ETL, obtenha os seis ZIPs oficiais primeiro.
-
-O notebook valida o contrato, o SHA-256 do manifesto e o período 2019–2024; produz `docs/assets/rq1.csv`, `rq2.csv`, `rq3.csv` e gráficos HTML/PNG. Os resultados foram comparados aos CSVs recebidos, com tolerância numérica de 1e-12.
-
-[Artigo local](docs/index.html). O artigo é publicado pelo GitHub Pages a partir de `main`, pasta `docs/`: [abrir artigo](https://whitte77.github.io/censo-superior-tic/). Para visualizar por HTTP, execute `python -m http.server 8000 --directory docs` e abra `http://localhost:8000`. Os gráficos interativos usam a CDN do Plotly; versões PNG estão disponíveis no artigo.
-
-No PowerShell, a preparação do ambiente é:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
-python -m nbconvert --to notebook --execute --inplace notebooks/analise_exploratoria.ipynb
-```
-
-Os arquivos de texto usam LF por `.gitattributes`, preservando o hash do manifesto também em clones no Windows.
+Os arquivos de texto usam LF por `.gitattributes`, preservando o hash do manifesto também em clones no Windows. A validação externa permanece parcial.
 
 ## Estrutura
 
@@ -100,3 +117,15 @@ A fonte oficial disponibiliza as seis edições utilizadas. A política de dados
 ## Repositório e origem da engenharia de dados
 
 [Repositório desta entrega](https://github.com/whitte77/censo-superior-tic). A engenharia de dados e seu histórico foram incorporados de [H-Arruda/censo-superior-tic](https://github.com/H-Arruda/censo-superior-tic), branch `feat/engenharia-dados`, commit `c8e67c0`. A licença MIT e a atribuição original foram preservadas.
+
+## Branches e fluxo do código
+
+| Branch | Responsabilidade |
+|---|---|
+| `feat/engenharia-dados` | Base original do Hiago: aquisição, auditoria, ETL e Parquet real; commit `c8e67c0`. |
+| `feat/analise-artigo` | Engenharia incorporada, contrato, indicadores, notebook executado e artigo. |
+| `main` | Versão completa da entrega, com o mesmo código de `feat/analise-artigo`; fonte do GitHub Pages. |
+
+Fluxo: `download/integrity/inventory/schema/profile/etl` → Parquet e metadados → `contract` → `analysis` → `viz` → `docs/assets` → artigo `docs/index.html`. O notebook coordena a leitura, análise e exportação; o artigo HTML apresenta as interpretações e deve ser revisado se os dados mudarem.
+
+[Conferência item a item do guia](AUDITORIA_GUIA.md) · [instruções originais recebidas](INSTRUCOES_DUPLA.md).

@@ -51,3 +51,9 @@ O pacote ZIP contém o projeto completo sem o ambiente virtual e sem a pasta `.g
 ## Publicação solicitada posteriormente — 19/11/2026
 
 Conta confirmada por autenticação: `whitte77` (Alessandro Davi). Repositório: https://github.com/whitte77/censo-superior-tic. A versão integrada é disponibilizada em `main` e em `feat/analise-artigo`; a branch de origem do ETL é preservada em `feat/engenharia-dados`. O histórico original e a licença MIT foram preservados. Artigo: https://whitte77.github.io/censo-superior-tic/. A publicação não altera as limitações estatísticas e de validação externa descritas acima.
+
+## Revisão do guia e das branches — 19/11/2026
+
+A verificação posterior foi executada em Python 3.12.14, em ambiente virtual isolado, com instalação integral de `requirements.txt`, `pip check` sem conflitos e nove células do notebook executadas sem erros. Os CSVs exportados continuam iguais aos do ZIP recebido. A versão 3.14.7 registrada acima corresponde à etapa inicial; o notebook e a versão Python de referência desta entrega foram agora atualizados para 3.12.14.
+
+A ancestralidade Git e a igualdade dos módulos do ETL/Parquet em relação à branch original foram verificadas. A documentação passou a distinguir a execução da análise (base já incluída) da reconstrução opcional do ETL (exige os ZIPs brutos). Consulte [a conferência completa](AUDITORIA_GUIA.md), com cada item do guia, as responsabilidades de cada branch e o fluxo entre os módulos. As limitações externas anteriores permanecem válidas.
