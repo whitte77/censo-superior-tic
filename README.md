@@ -58,7 +58,7 @@ A cópia integrada inclui o Parquet real de 24 linhas e os metadados versionados
 
 O notebook valida o contrato, o SHA-256 do manifesto e o período 2019–2024; produz `docs/assets/rq1.csv`, `rq2.csv`, `rq3.csv` e gráficos HTML/PNG. Os resultados foram comparados aos CSVs recebidos, com tolerância numérica de 1e-12.
 
-[Artigo local](docs/index.html). A pasta `docs/` está preparada para GitHub Pages; esta entrega não foi publicada. Para visualizar por HTTP, execute `python -m http.server 8000 --directory docs` e abra `http://localhost:8000`. Os gráficos interativos usam a CDN do Plotly; versões PNG estão disponíveis no artigo.
+[Artigo local](docs/index.html). O artigo é publicado pelo GitHub Pages a partir de `main`, pasta `docs/`: [abrir artigo](https://whitte77.github.io/censo-superior-tic/). Para visualizar por HTTP, execute `python -m http.server 8000 --directory docs` e abra `http://localhost:8000`. Os gráficos interativos usam a CDN do Plotly; versões PNG estão disponíveis no artigo.
 
 No PowerShell, a preparação do ambiente é:
 
@@ -96,3 +96,7 @@ A execução dos seis anos gerou 24 linhas. O manifesto registra SHA-256 e a ver
 As referências foram conferidas nas páginas editoriais da SBC, nos metadados DOI/Crossref, nos anais SciPy e na documentação oficial do Plotly; DOIs e páginas dos artigos SBC foram incluídos. A referência genérica do Plotly foi substituída pela documentação da biblioteca Python.
 
 A fonte oficial disponibiliza as seis edições utilizadas. A política de dados abertos do INEP descreve a reutilização com crédito da autoria ou fonte ([política oficial](https://download.inep.gov.br/publicacoes/institucionais/gestao_e_governanca/politica_e_plano_de_dados_abertos.pdf)). Uma licença específica dos seis pacotes não foi confirmada; por isso não se atribui MIT aos dados. Consulte [o registro da integração](RELATORIO_INTEGRACAO.md).
+
+## Repositório e origem da engenharia de dados
+
+[Repositório desta entrega](https://github.com/whitte77/censo-superior-tic). A engenharia de dados e seu histórico foram incorporados de [H-Arruda/censo-superior-tic](https://github.com/H-Arruda/censo-superior-tic), branch `feat/engenharia-dados`, commit `c8e67c0`. A licença MIT e a atribuição original foram preservadas.

@@ -4,7 +4,7 @@
 
 O ZIP solicitava integrar análise e artigo à branch de engenharia de dados, executar o notebook sobre o Parquet real, comparar as saídas, completar identificação, revisar referências e atualizar a documentação sem declarar validação externa integral.
 
-Foi criada uma cópia separada do repositório https://github.com/H-Arruda/censo-superior-tic, baseada em `origin/feat/engenharia-dados`, commit `c8e67c015eb04b898a099f04991409cda083d7b2`. A integração está na branch local `feat/integracao-analise-artigo`. Nenhum outro clone foi alterado. Não houve push, publicação nem envio a terceiros.
+Foi criada uma cópia separada do repositório https://github.com/H-Arruda/censo-superior-tic, baseada em `origin/feat/engenharia-dados`, commit `c8e67c015eb04b898a099f04991409cda083d7b2`. A integração está na branch local `feat/integracao-analise-artigo`. Nenhum outro clone foi alterado. Na etapa inicial de integração, não houve push, publicação nem envio a terceiros. O envio posterior foi solicitado pelo usuário e é registrado ao final deste relatório.
 
 ## Concluído
 
@@ -46,4 +46,8 @@ Os gráficos interativos dependem da CDN Plotly; os PNGs oferecem alternativa es
 - `data/processed/audit/comparacao_csvs.json` e `verificacao_integracao.json`: registros das verificações desta integração.
 - `README.md`: comandos para execução, fonte, limitações e condições de reutilização.
 
-O pacote ZIP contém o projeto completo sem o ambiente virtual e sem a pasta `.git`. O patch separado registra o commit local, com autoria técnica `Codex <codex@localhost>`. Para aplicar o patch em outro clone, atualize a branch com `origin/feat/engenharia-dados`, crie uma branch de integração e execute `git am caminho/para/integracao-analise-artigo.patch`. A publicação no GitHub não foi realizada.
+O pacote ZIP contém o projeto completo sem o ambiente virtual e sem a pasta `.git`. O patch separado registra o commit local, com autoria técnica `Codex <codex@localhost>`. Para aplicar o patch em outro clone, atualize a branch com `origin/feat/engenharia-dados`, crie uma branch de integração e execute `git am caminho/para/integracao-analise-artigo.patch`. A publicação posterior no GitHub está registrada abaixo.
+
+## Publicação solicitada posteriormente — 19/11/2026
+
+Conta confirmada por autenticação: `whitte77` (Alessandro Davi). Repositório: https://github.com/whitte77/censo-superior-tic. A versão integrada é disponibilizada em `main` e em `feat/analise-artigo`; a branch de origem do ETL é preservada em `feat/engenharia-dados`. O histórico original e a licença MIT foram preservados. Artigo: https://whitte77.github.io/censo-superior-tic/. A publicação não altera as limitações estatísticas e de validação externa descritas acima.
